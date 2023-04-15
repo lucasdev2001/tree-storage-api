@@ -54,19 +54,28 @@ app.post("/", upload.single("file"), async function (req, res, next) {
     }).save();
     res.json(newFile);
   } catch (error) {
+    res.json(error);
     console.log(error);
   }
 });
 
 app.get("/", async (req, res) => {
-  const files = await File.find({}).select("name size extension createdAt");
-  res.json(files);
+  try {
+    const files = await File.find({}).select("name size extension createdAt");
+    res.json(files);
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 app.get("/:id", async (req, res) => {
-  const _id = req.params.id;
-  const findFile = await File.findById(_id);
-  res.sendFile(findFile.path);
+  try {
+    const _id = req.params.id;
+    const findFile = await File.findById(_id);
+    res.sendFile(findFile.path);
+  } catch (error) {
+    res.json(error);
+  }
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
